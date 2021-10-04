@@ -1,7 +1,6 @@
 ---
-title: Reproducibility Report for Study X by Sample & Sample (20xx, Psychological
-  Science)
-author: "Reproducibility Project Author[s] (contact information)"
+title: Reproducibility Report for Sequential Inverse Plan Search by Zhi-Xuan et al. (2020, NeurIPS)
+author: "Julio Martinez"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
   html_document:
@@ -18,7 +17,7 @@ output:
 
 ## Introduction
 
-Sequential Inverse Plan Search (SIPS) is a probablistic program designed to perform efficient Bayesian inference over the goals of another angent whose internal planning process is unknown. In addition to SIPS, inverse reinforcement learning methods are used to invert the planning process of another agent by observing its behavior. However, inverse reinforcement learning methods typically assume that agents act optimally, which can quickly lead to an agent solving an intractable and even cognitively implausible problem. SIPS models other agents as planners who are boundedly rational, meaning that the amount of planning conduct by an agent is bounded and resource-limited. This leads SIPS agents to discover sub-optimal trajectories that can be improved through online Bayesian inference. The results in the paper show that SIPS predicts human judgements for goal inference better than inverse reinforcement learning methods across 4 different domains.  
+Sequential Inverse Plan Search (SIPS) is a probabilistic program designed to perform efficient Bayesian inference over the goals of another angent whose internal planning process is unknown. In addition to SIPS, inverse reinforcement learning methods are used to invert the planning process of another agent by observing its behavior. However, inverse reinforcement learning methods typically assume that agents act optimally, which can quickly lead to an agent solving an intractable and even cognitively implausible problem. SIPS models other agents as planners who are boundedly rational, meaning that the amount of planning conduct by an agent is bounded and resource-limited. This leads SIPS agents to discover sub-optimal trajectories that can be improved through online Bayesian inference. The results in the paper show that SIPS predicts human judgements for goal inference better than inverse reinforcement learning methods across 4 different domains.  
 
 For this project I will re-implement SIPS and evaluate it by reproducing results over 4 experiments that demonstrate its human-likeness, accuracy, and speed. To evaluate human-likeness I will reproduce a set of qualitative experiments by running SIPS over a domain in which an agent navigates a maze with **doors, keys, and gems**. In this domain, the agent can use keys to unlock doors to collect gems. My goal here is not to reproduce the human experiments part of the paper, but instead, I plan to re-implement SIPS, and observe the goals inferred by a SIPS agent, and finally compare those to the results from the original paper. For the purposes of this project, I will assume the results from the human experiments conducted in the paper are valid and use them to additionally verify that SIPS is more human-like than the results from other algorithms reported in the paper. Thus, the goal here is to reproduce SIPS human-likeness results by achieving the same inferences as those made in the paper. 
 
@@ -52,9 +51,10 @@ Another challenge I may face is the amount of training time required to get resu
 ### Links
 
 Project repository (on Github): 
-[https://github.com/psych251/mansinghka2020](https://github.com/psych251/mansinghka2020)
+[repository](https://github.com/psych251/zhi-xuan2020)
 
 Original paper (as hosted in your repo): 
+[original paper](https://github.com/psych251/zhi-xuan2020/blob/main/original_paper/2006.07532.pdf)
 
 ## Methods
 
