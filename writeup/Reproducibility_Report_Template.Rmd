@@ -1,0 +1,117 @@
+---
+title: Reproducibility Report for Study X by Sample & Sample (20xx, Psychological
+  Science)
+author: "Reproducibility Project Author[s] (contact information)"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+<!-- Reproducibility reports should all use this template to standardize reporting across projects. These reports will be public supplementary materials that accompany the summary report(s) of the aggregate results. -->
+
+## Introduction
+
+Sequential Inverse Plan Search (SIPS) is a probablistic program designed to perform efficient Bayesian inference over the goals of another angent whose internal planning process is unknown. In addition to SIPS, inverse reinforcement learning methods are used to invert the planning process of another agent by observing its behavior. However, inverse reinforcement learning methods typically assume that agents act optimally, which can quickly lead to an agent solving an intractable and even cognitively implausible problem. SIPS models other agents as planners who are boundedly rational, meaning that the amount of planning conduct by an agent is bounded and resource-limited. This leads SIPS agents to discover sub-optimal trajectories that can be improved through online Bayesian inference. The results in the paper show that SIPS predicts human judgements for goal inference better than inverse reinforcement learning methods across 4 different domains.  
+
+For this project I will re-implement SIPS and evaluate it by reproducing results over 4 experiments that demonstrate its human-likeness, accuracy, and speed. To evaluate human-likeness I will reproduce a set of qualitative experiments by running SIPS over a domain in which an agent navigates a maze with **doors, keys, and gems**. In this domain, the agent can use keys to unlock doors to collect gems. My goal here is not to reproduce the human experiments part of the paper, but instead, I plan to re-implement SIPS, and observe the goals inferred by a SIPS agent, and finally compare those to the results from the original paper. For the purposes of this project, I will assume the results from the human experiments conducted in the paper are valid and use them to additionally verify that SIPS is more human-like than the results from other algorithms reported in the paper. Thus, the goal here is to reproduce SIPS human-likeness results by achieving the same inferences as those made in the paper. 
+
+In addition to the doors, keys, and gems domain, I will evaluate the SIPS algorithm on three additional domains and observe the resulting accuracy and speed of inference. These three additional domains are: 
+
+* **Taxi**: A gridworld where a taxi is tasked with transporting a passenger from one grid cell to another gridcell. 
+* **Block Words**: A world where blocks are associated with a letter and where the goals are to build block towers that spell one of the five possible words.
+* **Intrusion Detection**: A domain where an agent is tasked to perform a cyber attack on up to a set of 10 servers from a set of 20 possible goals, each with a corresponding set of attacks.
+
+Analyses for this project will include a correlation between the inferences made over time by my re-implementation of SIPS and those reported in the original paper for the gem, doors, and keys domain. Furthermore, for all 4 domains, I will compare the accuracies (i.e. compute correlations) of the inferences made by my re-implementation and that of those reported in the paper. This will be done for 3 quartiles of trajectories in each domain. Finally, I will compute correlations of the speed for my re-implementation by measuring the runtime for the start-up cost, marginal cost per timestep, average cost per timestep, and total number of steps visited during search in SIPS. 
+
+So far, I have outline what I believe to be an achievable project for what can be accomplished within the time frame of the class. If however, I find I have additional time, I aim to also reproduce the results for robustness. This will include additionally re-implementing and running the baselines included in the paper. The baselines are variants of Bayesian Inverse Reinforcement Learning (BIRL) algorithms. The benefit of having these baselines is not just to demonstrate that SIPS is indeed more human-like than BIRL algorithms, but also to show that SIPS can infer the goals of other agents, including those of other SIPS agents and BIRL agents to the same accuracy reported in the paper. 
+
+Furthermore, if time still permits, I can perform the human experiments, by asking human subjects for goal inference judgements for each of the four domains. This will allow me to verify the correlations reported between SIPS, BIRL, and Human inference judgements. 
+
+### Justification for choice of study
+
+Please describe why you chose to reproduce the results of this study.
+
+I am interested in planning in physical environments. This paper will provide me an opportunity to become acquainted with some of the state of the art tools for planning and decision making. Furthermore, I will learn about Julia, a relatively new numerical programming language that is both high level and fast, and Gen.jl, the probabilistic programming language, which is central to many of the paradigms around which planning has been modeled, and is developed by researchers I am interested in collaborating with at MIT. Finally, I am not just interested in planning per se, but also, in topics revolving around planning and computational theory of mind. This paper sits right at the intersection of these research areas and I am highly interested in how these algorithms are implemented and potentially, beyond this course, how they might be extended to 3D physical environments with multiagent social interactions. 
+
+
+### Anticipated challenges
+
+Do you anticipate running into any challenges when attempting to reproduce these result(s)? If so please, list them here.
+
+Challenges will mostly be around interpretation of the psudo algorithm presented in the paper. I have decided to re-implement the paper, but not to translate it into another language like Python. The reason for this is because I am interested in learning Julia and Gen.jl, and as is usually the case, the same function can be implemented in many ways in code. 
+
+Another challenge I may face is the amount of training time required to get results. Planning algorithms can take long periods of training and subsequently may be hard to debug efficiently when errors are made. I anticipate needing to devote a significant amount of time and attention to not only coding, but possibly reaching out to the authors to understand bits of psudo code that I may not understand to reduce errors in my own implementation. 
+
+### Links
+
+Project repository (on Github): 
+[https://github.com/psych251/mansinghka2020](https://github.com/psych251/mansinghka2020)
+
+Original paper (as hosted in your repo): 
+
+## Methods
+
+### Description of the steps required to reproduce the results
+
+Please describe all the steps necessary to reproduce the key result(s) of this study. 
+
+### Differences from original study
+
+Explicitly describe known differences in the analysis pipeline between the original paper and yours (e.g., computing environment). The goal, of course, is to minimize those differences, but differences may occur. Also, note whether such differences are anticipated to influence your ability to reproduce the original results.
+
+## Project Progress Check 1
+
+### Measure of success
+
+Please describe the outcome measure for the success or failure of your reproduction and how this outcome will be computed.
+
+
+### Pipeline progress
+
+Earlier in this report, you described the steps necessary to reproduce the key result(s) of this study. Please describe your progress on each of these steps (e.g., data preprocessing, model fitting, model evaluation).
+
+
+## Results
+
+### Data preparation
+
+Data preparation following the analysis plan.
+	
+```{r include=F}
+### Data Preparation
+
+#### Load Relevant Libraries and Functions
+
+#### Import data
+
+#### Data exclusion / filtering
+
+#### Prepare data for analysis - create columns etc.
+```
+
+### Key analysis
+
+The analyses as specified in the analysis plan.  
+
+*Side-by-side graph with original graph is ideal here*
+
+###Exploratory analyses
+
+Any follow-up analyses desired (not required).  
+
+## Discussion
+
+### Summary of Reproduction Attempt
+
+Open the discussion section with a paragraph summarizing the primary result from the key analysis and assess whether you successfully reproduced it, partially reproduced it, or failed to reproduce it.  
+
+### Commentary
+
+Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis of the dataset, (b) assessment of the meaning of the successful or unsuccessful reproducibility attempt - e.g., for a failure to reproduce the original findings, are the differences between original and present analyses ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the reproducibility attempt (if you contacted them).  None of these need to be long.
