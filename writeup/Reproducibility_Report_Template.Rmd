@@ -17,9 +17,9 @@ output:
 
 ## Introduction
 
-Sequential Inverse Plan Search (SIPS) is a probabilistic program designed to perform efficient Bayesian inference over the goals of another angent whose internal planning process is unknown. In addition to SIPS, inverse reinforcement learning methods are used to invert the planning process of another agent by observing its behavior. However, inverse reinforcement learning methods typically assume that agents act optimally, which can quickly lead to an agent solving an intractable and even cognitively implausible problem. SIPS models other agents as planners who are boundedly rational, meaning that the amount of planning conduct by an agent is bounded and resource-limited. This leads SIPS agents to discover sub-optimal trajectories that can be improved through online Bayesian inference. The results in the paper show that SIPS predicts human judgements for goal inference better than inverse reinforcement learning methods across 4 different domains.  
+Sequential Inverse Plan Search (SIPS) is a probabilistic program designed to perform efficient Bayesian inference over the goals of another angent whose internal planning process is unknown. In addition to SIPS, inverse reinforcement learning methods are used to invert the planning process of another agent by observing its behavior. However, inverse reinforcement learning methods typically assume that agents act optimally, which can quickly lead to an agent solving an intractable and cognitively implausible problem. SIPS models other agents as planners who are boundedly rational, meaning that the amount of planning conducted by an agent is bounded and resource-limited. This leads SIPS observers to discover sub-optimal trajectories that can be improved through online Bayesian inference. The results in the paper show that SIPS predicts human judgements for goal inference better than inverse reinforcement learning methods across 4 different domains.  
 
-For this project I will re-implement SIPS and evaluate it by reproducing results over 4 experiments that demonstrate its human-likeness, accuracy, and speed. To evaluate human-likeness I will reproduce a set of qualitative experiments by running SIPS over a domain in which an agent navigates a maze with **doors, keys, and gems**. In this domain, the agent can use keys to unlock doors to collect gems. My goal here is not to reproduce the human experiments part of the paper, but instead, I plan to re-implement SIPS, and observe the goals inferred by a SIPS agent, and finally compare those to the results from the original paper. For the purposes of this project, I will assume the results from the human experiments conducted in the paper are valid and use them to additionally verify that SIPS is more human-like than the results from other algorithms reported in the paper. Thus, the goal here is to reproduce SIPS human-likeness results by achieving the same inferences as those made in the paper. 
+For this project I will re-implement SIPS and evaluate it by reproducing results over 4 experiments that demonstrate its human-likeness, accuracy, and speed. To evaluate human-likeness I will reproduce a set of qualitative experiments by running SIPS over a domain in which an agent navigates a maze with **doors, keys, and gems**. In this domain, the agent can use keys to unlock doors to collect gems. My goal here is not to reproduce the human experiments part of the paper, but instead, I plan to re-implement SIPS, and observe the goals inferred by a SIPS observer, and finally compare those to the results from the original paper. For the purposes of this project, I will assume the results from the human experiments conducted in the paper are valid and use them to additionally verify that SIPS is more human-like than the results from other algorithms reported in the paper. Thus, the goal here is to reproduce SIPS human-likeness results by achieving the same inferences as those made in the paper. 
 
 In addition to the doors, keys, and gems domain, I will evaluate the SIPS algorithm on three additional domains and observe the resulting accuracy and speed of inference. These three additional domains are: 
 
@@ -29,7 +29,7 @@ In addition to the doors, keys, and gems domain, I will evaluate the SIPS algori
 
 Analyses for this project will include a correlation between the inferences made over time by my re-implementation of SIPS and those reported in the original paper for the gem, doors, and keys domain. Furthermore, for all 4 domains, I will compare the accuracies (i.e. compute correlations) of the inferences made by my re-implementation and that of those reported in the paper. This will be done for 3 quartiles of trajectories in each domain. Finally, I will compute correlations of the speed for my re-implementation by measuring the runtime for the start-up cost, marginal cost per timestep, average cost per timestep, and total number of steps visited during search in SIPS. 
 
-So far, I have outline what I believe to be an achievable project for what can be accomplished within the time frame of the class. If however, I find I have additional time, I aim to also reproduce the results for robustness. This will include additionally re-implementing and running the baselines included in the paper. The baselines are variants of Bayesian Inverse Reinforcement Learning (BIRL) algorithms. The benefit of having these baselines is not just to demonstrate that SIPS is indeed more human-like than BIRL algorithms, but also to show that SIPS can infer the goals of other agents, including those of other SIPS agents and BIRL agents to the same accuracy reported in the paper. 
+So far, I have outline what I believe to be an achievable project for what can be accomplished within the time frame of the class. If however, I find I have additional time, I aim to also reproduce the results for robustness. This will include additionally re-implementing and running the baselines included in the paper. The baselines are variants of Bayesian Inverse Reinforcement Learning (BIRL) algorithms. The benefit of having these baselines is not just to demonstrate that SIPS is indeed more human-like than BIRL algorithms, but also to show that SIPS can infer the goals of other agents, including those of other SIPS based and BIRL based agents to the same accuracy reported in the paper. 
 
 Furthermore, if time still permits, I can perform the human experiments, by asking human subjects for goal inference judgements for each of the four domains. This will allow me to verify the correlations reported between SIPS, BIRL, and Human inference judgements. 
 
@@ -44,7 +44,7 @@ I am interested in planning in physical environments. This paper will provide me
 
 Do you anticipate running into any challenges when attempting to reproduce these result(s)? If so please, list them here.
 
-Challenges will mostly be around interpretation of the psudo algorithm presented in the paper. I have decided to re-implement the paper, but not to translate it into another language like Python. The reason for this is because I am interested in learning Julia and Gen.jl, and as is usually the case, the same function can be implemented in many ways in code. 
+Challenges will mostly be around interpretation of the pseudo algorithm presented in the paper. I have decided to re-implement the paper, but not to translate it into another language like Python. The reason for this is because I am interested in learning Julia and Gen.jl, and as is usually the case, the same function can be implemented in many ways in code. 
 
 Another challenge I may face is the amount of training time required to get results. Planning algorithms can take long periods of training and subsequently may be hard to debug efficiently when errors are made. I anticipate needing to devote a significant amount of time and attention to not only coding, but possibly reaching out to the authors to understand bits of psudo code that I may not understand to reduce errors in my own implementation. 
 
@@ -56,15 +56,30 @@ Project repository (on Github):
 Original paper (as hosted in your repo): 
 [original paper](https://github.com/psych251/zhi-xuan2020/blob/main/original_paper/2006.07532.pdf)
 
+
 ## Methods
+
+The reimplementation of SIPS for online bayesian search will be based on the algorithm pseudocode provided in the paper and is shown below. 
+
+![Algorithm Pseudocode for a SIPS Observer.](/Users/juliomartinez/Documents/Repositories/Psych251_Codes/Algorithm1.png){ width=75% }
+
+
+In addition to re-implementation, the reproduction of several inferences will take the form of generating the predictions, i.e. distributions, over an agent's goals at equal intervals throughout the trajectory of the executed plans. In this case, we will have three goals, the Red Gem, the Yellow Gem, and the Blue Gem, and the goals of a SIPS observer is to draw a distribution over these three goals. 
+
+![Predictions Over Time.](/Users/juliomartinez/Documents/Repositories/Psych251_Codes/distribution_over_time.png){ width=95% }
+
+### Differences from the original study
+
+There will be to my knowledge no known differences in the environments (experiments). The main difference in the planning algorithms however will come from the re-implementation from Algorithm 1 (SIPS). These difference my be minor quantitative differences in final values for distribution predictions over the trajectories but also in the efficiency of the algorithm (i.e. how fast it runs). 
+
+An agent executing SIPS over another agent acting within an environment is called an observer. This observer will, as the name denotes, observe an agent execute its plans in one of the four environments described above. As the observer receives observations at each time step, it is tasked with modeling the agent's goals and achieves this by also modeling the plans it forms in order to achieve those goals. Most importantly, SIPS observers assume agents are modeling their environment through generative processes that are resource rational and instead of modeling agents as full horizon planners, they model them as agents that form partial plans, that do not search for further plans until they have executed their partial ones. The horizon of these partial plans is modeled as a random variable which is sampled from a negative binomial distribution. The search process for these partial plans is itself a stochastic version of the A* search algorithm. Furthermore, Monte Carlo sampling it used to perform inference in an online fashion. Thus, this re-implementation will require several steps of random sampling. Given that random sampling depends on random seeds which have inherent variability I anticipate that the stochastic nature of this algorithm will lead to minor variations on the final results. 
 
 ### Description of the steps required to reproduce the results
 
-Please describe all the steps necessary to reproduce the key result(s) of this study. 
-
-### Differences from original study
-
-Explicitly describe known differences in the analysis pipeline between the original paper and yours (e.g., computing environment). The goal, of course, is to minimize those differences, but differences may occur. Also, note whether such differences are anticipated to influence your ability to reproduce the original results.
+1. Re-implement Algorithm 1 (SIPS) using Julia and Gen.jl 
+2. Execute an SIPs observer over an agent acting in the the doors, keys, and gems environment for both sub-optimal plans (online sequential partial plans) and failed plans (plans that fail to achieve their intended goals). 
+3. Record the distributions predicted over time (trajectories predicted) for the doors, keys and gems environment over the three possible goals (Red Gem, Yellow Gem, and Blue Gem) that a SIPs observer makes over agents with sub-optimal and failed plans. 
+4. Compute the predicted goal accuracy of a SIPs observer for the 4 environments mentioned above. Goal accuracy is quantified as the 1st, 2nd, and 3rd quartiles of each observed trajectory via the posterior probability of the true goal given the observation, and the proportion of times where the true goal is ranked 1st. 
 
 ## Project Progress Check 1
 
