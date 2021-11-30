@@ -553,9 +553,3 @@ function analyze_domain_results(path, domain_name, save=false)
     return stats_df
 end
 
-
-
-function foo(x)
-    println("here is my x value:")
-    println(x)
-end

@@ -1,4 +1,4 @@
-export world_importance_sampler, world_particle_filter, world_particle_filter2
+export world_importance_sampler, world_particle_filter, particle_filter_reimplementation
 
 using GenParticleFilters
 
@@ -116,6 +116,8 @@ function particle_filter_reimplementation(
     callback=nothing,
     resample=true,
     rejuvenate=nothing)
+    
+    println("Running reimplementation of particle filter for SIPS")
     
     threshold::Float64=1/4
     @unpack domain = world_config
