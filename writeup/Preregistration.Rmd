@@ -1,0 +1,58 @@
+---
+title: "Prerergistration"
+author: "Julio Martinez"
+date: "12/6/2021"
+output: html_document
+---
+
+## Introduction
+
+Sequential Inverse Plan Search (SIPS) is a probabilistic program designed to perform efficient Bayesian inference over the goals of another angent whose internal planning process is unknown. In addition to SIPS, inverse reinforcement learning methods are used to invert the planning process of another agent by observing its behavior. However, inverse reinforcement learning methods typically assume that agents act optimally, which can quickly lead to an agent solving an intractable and cognitively implausible problem. SIPS models other agents as planners who are boundedly rational, meaning that the amount of planning conducted by an agent is bounded and resource-limited. This leads SIPS observers to discover sub-optimal trajectories that can be improved through online Bayesian inference. The results in the paper show that SIPS predicts human judgements for goal inference better than inverse reinforcement learning methods across 4 different domains.  
+
+For this project I will re-implement SIPS as well as run Plan Recognition as Planning (PRP) as a baseline. 
+
+I wil run SIPS and PRP on four domains:
+
+* **Doors, Keys, and Gems**: A gridworld with locks, keys, and gems (the goals) where an agent has one underlying gem goal. 
+* **Taxi**: A gridworld where a taxi is tasked with transporting a passenger from one grid cell to another gridcell. 
+* **Block Words**: A world where blocks are associated with a letter and where the goals are to build block towers that spell one of the five possible words.
+* **Intrusion Detection**: A domain where an agent is tasked to perform a cyber attack on up to a set of 10 servers from a set of 20 possible goals, each with a corresponding set of attacks.
+
+
+Reproducibility will entail:
+
+1. t-tests on the mean and std deviations of the probability of the true goal given a history of observations of the original results and the new results from running the reimplementged SIPS and off the shelf PRP for several goals and intial states under all four domains listed above for 1st, 2nd, and 3rd quartiles of the trajectories for observed optimal plans and suboptimal plans with backtracking. 
+2. t-tests on the mean and std deviation of the proportion of time the probability of the true goal leads top1 accuracy (true goal has value in the predicted distribution) for the original data and the reimplemented SIPS and off the shelf PRP for several goals and intial states under all four domains listed above for 1st, 2nd, and 3rd quartiles of the trajectories for observed optimal plans and suboptimal plans with backtracking.  
+3. t-tests on the mean and std deviation of the number of states visited for the original data and the reimplemented SIPS and off the shelf PRP for several goals and initial states under all four domains listed above for 1st, 2nd, and 3rd quartiles of the trajectories for observed optimal plans and suboptimal plans with backtracking. 
+4. run pearson correlations over the trajectory of SIPS and PRP to human judgements on the keys, doors, and gems domain for a suboptimal case with backtracking listed as shown in figure 1 in the original paper. 
+
+### Figures
+The figures and tables below contain the original results from running SIPS and PRP in the paper and the ones mentioned above are the ones I am aiming to reproduce. My plan is to reproduce all results in the tables and the trajectory figures but restricted to SIPS and PRP method (will not reproduce BIRL-U and BIRL-O) for tabes S1 and S2. For tabes S3 and S4 I will only reproduce the last column (mean of N and its standard deviation) for SIPS and PRP for all domains. 
+
+![True Goal Probablity and Top 1 for Suboptimal Plans](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/tableS1.png){ width=75% }
+![True Goal Probablity and Top 1 for Suboptimal Plans](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/tableS2.png){ width=75% }
+
+![Efficiency Under Optimal Plans](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/tableS3.png){ width=75% }
+
+![Efficiency Under Suboptimal Plans](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/tableS4.png){ width=75% }
+
+![SIPS Inferences](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/SIPS_inferences.png){ width=75% }
+
+![Human Trajectories](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/human_inferences.png){ width=75% }
+
+![Qualitative Comparisons](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/qualitative_sips_vs_prp_vs_human_inferences.png){ width=75% }
+
+### Links
+
+Project repository (on Github): 
+[repository](https://github.com/psych251/zhi-xuan2020)
+
+Original paper (as hosted in your repo): 
+[original paper](https://github.com/psych251/zhi-xuan2020/blob/main/original_paper/2006.07532.pdf)
+
+
+## Methods
+
+The reimplementation of SIPS for online bayesian search will be based on the algorithm pseudocode provided in the paper and is shown below. 
+
+![Algorithm Pseudocode for a SIPS Observer.](/Users/juliomartinez/Documents/Repositories/Psych251_Codes/Algorithm1.png){ width=75% }

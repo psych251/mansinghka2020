@@ -1,0 +1,11 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/817502/7e73d825304f4366949d5b7b612e7846
+bundleId: https://api.rpubs.com/api/v1/document/817502/7e73d825304f4366949d5b7b612e7846
+url: http://rpubs.com/martinezjulio/817502
+when: 1638074614.48927
+lastSyncTime: 1638074614.48929

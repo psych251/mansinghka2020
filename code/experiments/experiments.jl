@@ -350,6 +350,13 @@ function run_problem_experiments(path, domain_name, problem_idx,
     # Load domain, problem, and set of goals
     domain, problem, goals = load_problem_files(path, domain_name, problem_idx)
     init_state = initialize(problem)
+    #println("goals ",goals)
+    #println("num goals ", length(goals))
+    #new_goals = goals[12:end]
+
+    #println("new_goals ",new_goals)
+    #println("num new goals ", length(new_goals))
+    #goals = new_goals
 
     # Load dataset of observed trajectories for the current problem
     obs_path = joinpath(path, "observations", obs_subdir, domain_name)
@@ -505,6 +512,7 @@ function run_domain_experiments(path, domain_name, obs_subdir="optimal",
     # Run experiments for each problem
     domain_dfs = []
     summary_df = DataFrame()
+    println("problem_idxs ",problem_idxs)
     for idx in problem_idxs
         println("Running experiments for problem $idx...")
         dfs, s_df = run_problem_experiments(path, domain_name, idx,
