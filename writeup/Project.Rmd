@@ -17,23 +17,15 @@ output:
 
 
 
-## Introduction
+## Background
 
 Sequential Inverse Plan Search (SIPS) is a probabilistic program designed to perform efficient Bayesian inference over the goals of another angent whose internal planning process is unknown. In addition to SIPS, inverse reinforcement learning methods are used to invert the planning process of another agent by observing its behavior. However, inverse reinforcement learning methods typically assume that agents act optimally, which can quickly lead to an agent solving an intractable and cognitively implausible problem. SIPS models other agents as planners who are boundedly rational, meaning that the amount of planning conducted by an agent is bounded and resource-limited. This leads SIPS observers to discover sub-optimal trajectories that can be improved through online Bayesian inference. The results in the paper show that SIPS predicts human judgements for goal inference better than inverse reinforcement learning methods across 4 different domains.  
 
-For this project I will re-implement SIPS and evaluate it by reproducing results over 4 experiments that demonstrate its human-likeness, accuracy, and speed. To evaluate human-likeness I will reproduce a set of qualitative experiments by running SIPS over a domain in which an agent navigates a maze with **doors, keys, and gems**. In this domain, the agent can use keys to unlock doors to collect gems. My goal here is not to reproduce the human experiments part of the paper, but instead, I plan to re-implement SIPS, and observe the goals inferred by a SIPS observer, and finally compare those to the results from the original paper. For the purposes of this project, I will assume the results from the human experiments conducted in the paper are valid and use them to additionally verify that SIPS is more human-like than the results from other algorithms reported in the paper. Thus, the goal here is to reproduce SIPS human-likeness results by achieving the same inferences as those made in the paper. 
+For this project I will re-implement SIPS and evaluate it by reproducing results over several experiments that demonstrate its human-likeness, accuracy, and efficiency. To evaluate human-likeness I will reproduce a set of qualitative experiments by running SIPS over a domain in which an agent navigates a maze with **doors, keys, and gems**. In this domain, the agent can use keys to unlock doors to collect gems. My goal here is not to reproduce the human experiments part of the paper, but instead, I plan to re-implement SIPS, and observe the goals inferred by a SIPS observer, and finally compare those to the results from the original paper. For the purposes of this project, I will assume the results from the human experiments conducted in the paper are valid and use them to additionally verify that SIPS is more human-like than the results from other algorithms reported in the paper. Thus, the goal here is to reproduce SIPS human-likeness results by achieving the same inferences as those made in the paper. 
 
-In addition to the doors, keys, and gems domain, I will evaluate the SIPS algorithm on three additional domains and observe the resulting accuracy and speed of inference. These three additional domains are: 
+Analyses for this project will include a correlation between the inferences made over time by my re-implementation of SIPS and those reported in the original paper for a suboptimal plan with a given start state and goal (in this case a bue gem) for the gem, doors, and keys domain. Additionally, I will run SIPS on several problems consistising of intital start states and goal pairs on the doors, keys, and gems domain, and compute the average probability of the true goal conditioned on observed history at three different quartiles of the trajectory, the proportion of time the true goal is the top 1 accuracy in the inferred distribution, and the total number of states visted during the entire trajectory.
 
-* **Taxi**: A gridworld where a taxi is tasked with transporting a passenger from one grid cell to another gridcell. 
-* **Block Words**: A world where blocks are associated with a letter and where the goals are to build block towers that spell one of the five possible words.
-* **Intrusion Detection**: A domain where an agent is tasked to perform a cyber attack on up to a set of 10 servers from a set of 20 possible goals, each with a corresponding set of attacks.
-
-Analyses for this project will include a correlation between the inferences made over time by my re-implementation of SIPS and those reported in the original paper for the gem, doors, and keys domain. Furthermore, for all 4 domains, I will compare the accuracies (i.e. compute correlations) of the inferences made by my re-implementation and that of those reported in the paper. This will be done for 3 quartiles of trajectories in each domain. Finally, I will compute correlations of the speed for my re-implementation by measuring the runtime for the start-up cost, marginal cost per timestep, average cost per timestep, and total number of steps visited during search in SIPS. 
-
-So far, I have outline what I believe to be an achievable project for what can be accomplished within the time frame of the class. If however, I find I have additional time, I aim to also reproduce the results for robustness. This will include additionally re-implementing and running the baselines included in the paper. The baselines are variants of Bayesian Inverse Reinforcement Learning (BIRL) algorithms. The benefit of having these baselines is not just to demonstrate that SIPS is indeed more human-like than BIRL algorithms, but also to show that SIPS can infer the goals of other agents, including those of other SIPS based and BIRL based agents to the same accuracy reported in the paper. 
-
-Furthermore, if time still permits, I can perform the human experiments, by asking human subjects for goal inference judgements for each of the four domains. This will allow me to verify the correlations reported between SIPS, BIRL, and Human inference judgements. 
+Finally I will also compare to one baseline presented in the supplement of the paper known as Plan Recognition as Planning (PRP). 
 
 ### Justification for choice of study
 
@@ -58,93 +50,47 @@ Project repository (on Github):
 Original paper (as hosted in your repo): 
 [original paper](https://github.com/psych251/zhi-xuan2020/blob/main/original_paper/2006.07532.pdf)
 
+Preregistration link:
+[preregistration](https://osf.io/g4uh7)
 
 ## Methods
 
 The reimplementation of SIPS for online bayesian search will be based on the algorithm pseudocode provided in the paper and is shown below. 
 
 ![Algorithm Pseudocode for a SIPS Observer.](/Users/juliomartinez/Documents/Repositories/Psych251_Codes/Algorithm1.png){ width=75% }
+The folowing figures show the trajectories for the inferences humans, SIPS, and PRP make for an agent in the doors keys, and gems domain executing a suboptimal plab with backtracking. 
+
+![SIPS Inferences](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/SIPS_inferences.png){ width=75% }
+
+![Human Trajectories](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/human_inferences.png){ width=75% }
 
 
-In addition to re-implementation, the reproduction of several inferences will take the form of generating the predictions, i.e. distributions, over an agent's goals at equal intervals throughout the trajectory of the executed plans. In this case, we will have three goals, the Red Gem, the Yellow Gem, and the Blue Gem, and the goals of a SIPS observer is to draw a distribution over these three goals. 
+![Qualitative Comparisons](/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/data/paper_figures/qualitative_sips_vs_prp_vs_human_inferences.png){ width=75% }
 
-![Predictions Over Time.](/Users/juliomartinez/Documents/Repositories/Psych251_Codes/distribution_over_time.png){ width=95% }
-
-### Differences from the original study
+### Exclusions and Differences from the original study
 
 There will be to my knowledge no known differences in the environments (experiments). The main difference in the planning algorithms however will come from the re-implementation from Algorithm 1 (SIPS). These difference my be minor quantitative differences in final values for distribution predictions over the trajectories but also in the efficiency of the algorithm (i.e. how fast it runs). 
 
 An agent executing SIPS over another agent acting within an environment is called an observer. This observer will, as the name denotes, observe an agent execute its plans in one of the four environments described above. As the observer receives observations at each time step, it is tasked with modeling the agent's goals and achieves this by also modeling the plans it forms in order to achieve those goals. Most importantly, SIPS observers assume agents are modeling their environment through generative processes that are resource rational and instead of modeling agents as full horizon planners, they model them as agents that form partial plans, that do not search for further plans until they have executed their partial ones. The horizon of these partial plans is modeled as a random variable which is sampled from a negative binomial distribution. The search process for these partial plans is itself a stochastic version of the A* search algorithm. Furthermore, Monte Carlo sampling it used to perform inference in an online fashion. Thus, this re-implementation will require several steps of random sampling. Given that random sampling depends on random seeds which have inherent variability I anticipate that the stochastic nature of this algorithm will lead to minor variations on the final results. 
 
+I will not compute analysis for 3 other domains Taxi, Intrusion Detection, and Word Blocks domains. Also I wil only compute the trajectory correlations for one problem in the Doors, keys, gems domain while computing the average true goall probabiltiy, top 1 accuracy, and efficiency of SIPS and PRP over severall problems in the doors, keys, gems domain. I will not run or compute any results Bayesian Reinforcement learning baeslines, only PRP. 
+
 ### Description of the steps required to reproduce the results
 
-1. Re-implement Algorithm 1 (SIPS) using Julia and Gen.jl 
+1. Re-implement Algorithm 1 (SIPS) using Julia within the Gen.jl  and PDDL.jl framework
 2. Execute an SIPs observer over an agent acting in the the doors, keys, and gems environment for both sub-optimal plans (online sequential partial plans) and failed plans (plans that fail to achieve their intended goals). 
-3. Record the distributions predicted over time (trajectories predicted) for the doors, keys and gems environment over the three possible goals (Red Gem, Yellow Gem, and Blue Gem) that a SIPs observer makes over agents with sub-optimal and failed plans. 
-4. Compute the predicted goal accuracy of a SIPs observer for the 4 environments mentioned above. Goal accuracy is quantified as the 1st, 2nd, and 3rd quartiles of each observed trajectory via the posterior probability of the true goal given the observation, and the proportion of times where the true goal is ranked 1st. 
-5. Generate Visualizations.
-
-## Project Progress Check 1
-
-### Measure of success
-
-Please describe the outcome measure for the success or failure of your reproduction and how this outcome will be computed.
-
-The outcome measure of success or failure will come from two separate analysis. The first will be a comparison of the distribution predictions over the doors, keys and gems environment over the possible three goals as outline in the description of steps required to reproduce the results. This will be computed for both SIPs and the baseline BIRL. Another baseline that I have decided to include is the Plan Recognition as Planning (PRP) algorithm. This is an offline algorithm that is known to achieve high accuracy and that was used as a baseline in the original paper but included only as part of the supplement. Thus for SIPS and the baselines BIRL and PRP, I will compute the posterior $p(g_{true} | o_{1:t})$, where $o_{1:t}=(o_1, ..., o_t)$ are the noisy state observations that a SIPS (or BIRL or PRP) observer receives up to some time-step $t$. Denoting the set of possible goals as $G$, the SIPS observer's objective is to infer the true goal of the agent $g_{true}$ by computing the posterior over $G$ (i.e. the probability of each goal $g \in G$ given the history of observations up to time step $t$, and in particular that of $g_{true} \in G$.  
-
-Once we have the posterior distribution over the true goal, the second analysis will be to compute the accuracy of the inferences made by SIPS and the baselines and compare them to those reported in the paper for the four environments. The accuracy is computed as the proportion of times where $p(g_{true}|o_{1:t}) > p(g|o_{1:t}) \forall g \neq g_{true} \in G$. Since we are able to compute this distribution for different values of $t$, we will repeat the analysis in the paper but specifying $t$ to be at 1st, 2nd and 3rd quartiles of the total number of time steps. 
-
-
-### Pipeline progress
-
-Earlier in this report, you described the steps necessary to reproduce the key result(s) of this study. Please describe your progress on each of these steps (e.g., data preprocessing, model fitting, model evaluation).
-
-Currently I am working on step 1 for SIPS (the re-implementation) as it is quite involved. However steps 1-4 are also required for the baselines without the need for re-implementation. In light of this I have completed steps 1-4 for the PRP algorithm. For the BIRL algorithm none of the steps have been completed. 
-
-Making progress of re-implementing Algorithm 1 and re-running PRP has allowed me to become acquainted with the pipeline, specifically with the following libraries in Julia: PPDL.jl, Gen.jl, and Plinf.jl all of which are Julia modules written by the author of the paper. I have also learned about the Julia programming language itself since I am not very familiar with it. This has allowed me to install these modules and run the PRP baseline on all four environments and make inferences for both optimal and sub-optimal plans. 
-
-Currently I am struggling to have the Plinf.jl version of SIPS (their original implementation of the main contribution) run without errors. I am getting an error even after following the repository's README.md instructions and I have reached out to the author to get a handle on this. It is critical I have at least their implementation of SIPS running smoothly since it will allow me to know how to correctly import and interface my own re-implementation of SIPS with the Plinf.jl module.  Furthermore, I have not yet run the BIRL algorithm because it will require me to use another independent repository without documentation. This is the one that the authors have pointed to. I will be reaching out to the authors for clarification to understand what commands and functions they executed to run BIRL. If however, I am unable to resolve this in time I will compromise to using the only PRP as a baseline due to time constraints of this course. 
-
-In addition I have received from the author the human experiments pilot data, namely the human inferences, human stimuli, and human-generated plans. While I do not plan on replicating this data, I plan on plotting these to show the similarities and differences to SIPS and other baselines to demonstrate whether SIPS or the baselines perform closer to humans. 
-
-## Project Progress Check 2
-I have been able to run the SIPS and PRP algorithm on optimal and suboptimal plans for three domains (all except the keys, doors, and gems domain). I have also excluded the results from the PRP algorithm suboptimal case since these results are still computing and each take several hours (approximately 12 hours) to compute. 
+3. Record the distributions predicted over time (trajectories predicted) for the doors, keys and gems environment over the three possible goals (Red Gem, Yellow Gem, and Blue Gem) that a SIPs observer makes over agents under a suboptimal plan with backtracking. 
+4. Compute the inferences of a SIPs observer for the the doorsm keysm and gems domain over several distinct problems (problems consist of distinct intitate state and goal pairs). Infernces to be compared in the analysis are the probability of the true goal given the history of trajectories, the proportion of that probability being the top 1 probability in the distribution both at each of three quartiels, and the efficiency of the inferences over the entire trajectory
+5. Rerun the same computations using off the shelf PRP.
 
 ### Data Preparation
 See [code](https://github.com/psych251/zhi-xuan2020/tree/main/code/experiments).
 
 This was done by cloning the original repository, implementing a new [particle filter reimplementation for the SIPS aglorithm](https://github.com/psych251/zhi-xuan2020/blob/main/code/src/inference/inference.jl) to call in  and then running experiements with new implementation with commands as detailed in the [README.md](https://github.com/psych251/zhi-xuan2020/tree/main/code/experiment).
 
-Reproduced data is found in the [results folder](https://github.com/psych251/zhi-xuan2020/tree/main/code/experiments/results). This folder is not from the origina data from the paper, but is from running the reimplementation of SIPS and from running the original baseline PRP. Original data for running these algorithms is found in the supplementary for the paper, which was manually copied into a datafram using Julia, the notebook where this is done can be found here []().  
+Reproduced data is found in the [results folder](https://github.com/psych251/zhi-xuan2020/tree/main/code/experiments/results). This folder is not from the origina data from the paper, but is from running the reimplementation of SIPS and from running the original baseline PRP. Original data for running these algorithms is found in the supplementary for the paper, which was manually copied into a datafram using Julia, the notebook where this is done can be found here [Playground.ipynb](https://github.com/psych251/zhi-xuan2020/blob/main/code/Playground.ipynb).  
 
 ## Results
- The results show the progress by listing the results for both the optimal and the suboptimal case. The averages were computed across several problems which consists of a pair of an initial state and goal. Only one run is executed per intitial state and goal pair but distributions are computed cross several pairs. Thus the average of the probability of the true goal given a sequence of observation is computed along with the standard deviation. mean(Q1) and mean(std) denote the mean and standard deviation of the probability of the trye goal given a history of observations for the first quartile in the trajectory across problem pairs. Similar statistics are show for the 2nd and 3rd quartiles.
-
-```{r include=F}
-
-
-
-#### Data exclusion / filtering
-
-#### Prepare data for analysis - create columns etc.
-```
-Optimal Plans:
-
-| Domain              | Method         | mean(Q1)        | std(Q1)         | mean(Q2)        | std(Q2)         | mean(Q3)        | std(Q3)         | mean(N)           | std(N)          |
-|---------------------|----------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|-------------------|-----------------|
-| Taxi                | SIPS <br/> PRP | 0.35 <br/> 0.33 | 0.08 <br/> 0    | 0.46 <br/> 0.36 | 0.28 <br/> 0.06 | 0.53 <br/> 0.44 | 0.35 <br/> 0.08 | 1380 <br/> 6774   | 304 <br/> 2078  |
-| Block-Words         | SIPS <br/> PRP | 0.41 <br/> 0.38 | 0.26 <br/> 0.18 | 0.69 <br/> 0.77 | 0.45 <br/> 0.28 | 0.73 <br/> 0.91 | 0.45 <br/> 0.18 | 2176 <br/> 3962   | 1012 <br/> 1376 |
-| Intrusion-Detection | SIPS <br/> PRP | 0.68 <br/> 0.17 | 0.43 <br/> 0.22 | 0.99 <br/> 0.59 | 0.01 <br/> 0.28 | 1 <br/> 0.87    | 0 <br/> 0.22    | 14350 <br/> 43864 | 3569 <br/> 3331 |
-
-Suboptimal Plans:
-
-| Domain              | Method        | mean(Q1)       | std(Q1)        | mean(Q2)       | std(Q2)        | mean(Q3)       | std(Q3)          | mean(N)        | std(N)         |
-|---------------------|---------------|----------------|----------------|----------------|----------------|----------------|------------------|----------------|----------------|
-| Taxi                | SIPS<br/> PRP | 0.35<br/> 0.33 | 0.20<br/> 0    | 0.39<br/> 0.35 | 0.29<br/> 0.06 | 0.47<br/> 0.53 | 0.422<br/> 0.223 | 1873<br/> 8771 | 1386<br/> 5770 |
-| Block-Words         | SIPS<br/> PRP | 0.49<br/> 0.36 | 0.32<br/> 0.18 | 0.80<br/> 0.77 | 0.38<br/> 0.24 | 0.82<br/> 0.90 | 0.38<br/> 0.17   | 2957<br/> 5657 | 1681<br/> 4864 |
-| Intrusion-Detection | SIPS<br/> PRP | 0.48<br/> x.xx | 0.41<br/> x.xx | 0.98<br/> x.xx | 0.16<br/> x.xx | 1.00<br/> x.xx | 0<br/> x.xx      | 13442<br/> x   | 3566<br/> x    |
-
-## Project Progress Check 3
 
 #### Load Relevant Libraries and Functions
 ```{r message=FALSE, warning=FALSE}
@@ -152,6 +98,9 @@ library(tidyverse)
 library(reshape2)
 library(ggplot2)
 library(cowplot)
+library(latex2exp)
+library(knitr)
+library(lemon)
 ```
 
 ### Import Data
@@ -186,8 +135,6 @@ reproduced_sips_supoptimal_inferences_df <- read_csv("/Users/juliomartinez/Docum
 reproduced_prp_supoptimal_inferences_df <- read_csv("/Users/juliomartinez/Documents/Repositories/zhi-xuan2020/code/experiments/results/doors-keys-gems-run-0-prp-suboptimal/doors-keys-gems_problem_6_goal2_0.csv", show_col_types = FALSE)
 #head(reproduced_prp_supoptimal_inferences_df)
 ```
-
-
 
 ### Data Analysis
 
@@ -253,8 +200,8 @@ suboptimal_prp_dist = reproduced_prp_supoptimal_inferences_df %>%
 suboptimal_prp_plot <- ggplot(suboptimal_prp_dist, 
                                aes(x=timestep, y=prob, group=goal, color=goal)) + 
   scale_color_manual(
-    labels = c("red gem", "yellow gem", "blue gem"), 
-    values=c("#e6102d","#ffc533", "#669bcc")) + 
+    labels = c("yellow gem","red gem", "blue gem"), 
+    values=c("#ffc533", "#e6102d", "#669bcc")) + 
   scale_fill_manual(values=c("#e6102d","#ffc533", "#669bcc")) +
   geom_line(mapping=aes(colour=goal)) + 
   geom_point() + 
@@ -264,419 +211,466 @@ suboptimal_prp_plot <- ggplot(suboptimal_prp_dist,
   coord_fixed(ratio=10) 
 ```
 
-```{r}
-plot_grid(human_ribbon_dist, 
-          suboptimal_sips_plot, 
-          ncol = 1)
 
-plot_grid(suboptimal_sips_plot, 
-          suboptimal_prp_plot, 
-          ncol = 1)
+```{r}
+xout = seq(1,36,length.out=50) 
+
+temp_humans <- human_dist  %>%
+  filter(goal=="goal_probs_0") 
+humans_p0  <- approx(x=temp_humans$timestep , y=temp_humans$mean, xout=xout)
+
+temp_humans <- human_dist  %>%
+  filter(goal=="goal_probs_1") 
+humans_p1  <- approx(x=temp_humans$timestep , y=temp_humans$mean, xout=xout)
+
+temp_humans <- human_dist  %>%
+  filter(goal=="goal_probs_2") 
+humans_p2  <- approx(x=temp_humans$timestep , y=temp_humans$mean, xout=xout)
+
+temp_sips <- suboptimal_sips_dist  %>%
+  filter(goal=="goal_probs_0") 
+sips_p0  <- approx(x=temp_sips$timestep , y=temp_sips$prob, xout=xout)
+
+temp_sips <- suboptimal_sips_dist  %>%
+  filter(goal=="goal_probs_1") 
+sips_p1  <- approx(x=temp_sips$timestep , y=temp_sips$prob, xout=xout)
+
+temp_sips <- suboptimal_sips_dist  %>%
+  filter(goal=="goal_probs_2") 
+sips_p2  <- approx(x=temp_sips$timestep , y=temp_sips$prob, xout=xout)
+
+temp_prp <- suboptimal_prp_dist  %>%
+  filter(goal=="goal_probs_0") 
+
+prp_p0  <- approx(x=temp_prp$timestep , y=temp_prp$prob, xout=xout)
+
+temp_prp <- suboptimal_prp_dist  %>%
+  filter(goal=="goal_probs_1") 
+prp_p1  <- approx(x=temp_prp$timestep , y=temp_prp$prob, xout=xout)
+
+temp_prp <- suboptimal_prp_dist  %>%
+  filter(goal=="goal_probs_2") 
+prp_p2  <- approx(x=temp_prp$timestep , y=temp_prp$prob, xout=xout)
+
+sips_trajectory_vector <- c(sips_p0$y, sips_p1$y, sips_p2$y)
+prp_trajectory_vector <- c(prp_p0$y, prp_p1$y, prp_p2$y)
+human_trajectory_vector <- c(humans_p0$y, humans_p1$y, humans_p2$y)
+
+r_sips <- cor(x=sips_trajectory_vector, human_trajectory_vector, method = c("pearson"))
+#print(r_sips)
+
+r_prp <- cor(x=prp_trajectory_vector, human_trajectory_vector, method = c("pearson"))
+#print(r_prp)
+
+correlations <- data.frame(c(r_sips, r_prp), c("sips", "prp"))    
+names(correlations) <- c("Correlation", "Method")
+
 ```
 
+
 ```{r}
-mean_prob_true_goal_quartiles <- function(method, domain, orig_df, rep_df, selections) {
-  
-  #print(orig_df)
-  
-  # filter out unused baselines
-  orig_df2 <- orig_df %>%
-    filter(method != "BIRL-U")  %>%
-    filter(method != "BIRL-O") 
-  
-  #print(orig_df2)
-  
-  # match column names to my new data column names
-  colnames(orig_df2) <- c("Domain", "Method", 'Q1_mean','Q1_std', 'Q2_mean','Q2_std', 'Q3_mean','Q3_std', 
+mean_prob_true_goal_quartiles <- function(optimality, domain, df, stat, data) {
+
+  if (data=="original"){
+    colnames(df) <- c("Domain", "Method", 'Q1_mean','Q1_std', 'Q2_mean','Q2_std', 'Q3_mean','Q3_std', 
                               "Q1_top_ranked_mean", "Q1_top_ranked_std", "Q2_top_ranked_mean", "Q2_top_ranked_std", 
                               "Q3_top_ranked_mean", "Q3_top_ranked_std","N_mean", "N_std")
+  }
   
-  #print(orig_df2)
+  if (stat=="proportion_top1") {
+    selections <- c("Q1_top_ranked_mean", "Q2_top_ranked_mean", "Q3_top_ranked_mean", "Q1_top_ranked_std", "Q2_top_ranked_std", "Q3_top_ranked_std")
+    x_y_names <- c("x1", "x2", "x3", "y1","y2","y3")
+  } else if (stat=="average_probability") {
+    selections <- c("Q1_mean", "Q2_mean", "Q3_mean", "Q1_std", "Q2_std", "Q3_std")
+    x_y_names <- c("x1", "x2", "x3", "y1","y2","y3")
+  } else if (stat=="average_states_visited") {
+    selections <- c("N_mean", "N_std")
+    x_y_names <- c("x1", "y1")
+  }
   
   # filter out method (sips or prp) and domain (keys-doors-gems, taxi, etc)
-  orig_df2 <- orig_df2 %>%
-    filter(Domain == domain, Method == method) %>%
-    select(contains(selections))
-    #select(Q1_mean, Q2_mean, Q3_mean, Q1_std, Q2_std, Q3_std)
+  if (optimality=="Optimal") {
+    # filter out unused baselines
+    df2 <- df %>%
+      filter(Method != "BIRL-U")  %>%
+      filter(Method != "BIRL-O") 
     
-  
-  #print(orig_df2)
-  
-  rep_df2 <- rep_df%>%
-    filter(Domain == domain, Method== method) %>%
-    select(contains(selections))
-    #select(Q1_mean, Q2_mean, Q3_mean, Q1_std, Q2_std, Q3_std)
+    sips_df <- df2 %>%
+      filter(Domain == domain, Method == "sips") %>%
+      select(contains(selections))
+    prp_df <- df2 %>%
+      filter(Domain == domain, Method == "prp") %>%
+      select(contains(selections))
+  } else {
+    sips_df <- df%>%
+      filter(Domain == domain, Method == "sips") %>%
+      select(contains(selections))
+    prp_df <- df%>%
+      filter(Domain == domain, Method == "prp") %>%
+      select(contains(selections))
+  }
   
   # rewrite column names for grouping
-  x_y_names <- c("x1", "x2", "x3", "y1","y2","y3")
-  colnames(orig_df2) <- x_y_names
-  colnames(rep_df2) <- x_y_names
-  
-  #print(orig_df2)
+  colnames(sips_df) <- x_y_names
+  colnames(prp_df) <- x_y_names
   
   # prep to summarize
-  orig_df2 <- orig_df2 %>%
+  sips_df <- sips_df %>%
     pivot_longer(everything(),
                  names_to = c(".value", "set"),
                  names_pattern = "(.)(.)")
   
-  #print(orig_df2)
-  
-  rep_df2 <- rep_df2 %>%
+  # prep to summarize
+  prp_df <- prp_df %>%
     pivot_longer(everything(),
                  names_to = c(".value", "set"),
                  names_pattern = "(.)(.)")
-
-  orig_df2$status <- "orig"
-  rep_df2$status <- "new"
   
-  rbind_df <- rbind(orig_df2, rep_df2)
-  colnames(rbind_df) <- c("quartile", "mean", "sd", "data")
-    
+  sips_df$method <- "sips"
+  prp_df$method <- "prp"
+  
+  rbind_df <- rbind(sips_df, prp_df)
+  
+  colnames(rbind_df) <- c("quartile", "mean", "sd", "method")
+  
   return(rbind_df) 
 }
 
-get_mean_prob_true_goal_quartiles_plot <- function(quartiles_df, method, optimality){
-  quartiles_plot <- ggplot(quartiles_df, aes(x=quartile, y=mean, fill=data)) + 
+get_mean_prob_true_goal_quartiles_plot <- function(quartiles_df, optimality, stat, data){
+  if (stat=="proportion_top1"){
+    y_label <- TeX(r'(Prop $P(g_{true}|o)$ is Top 1)')
+    x_label <- "Trajectory Quartile"
+  } else if (stat=="average_probability") {
+    y_label <- TeX(r'(Average $P(g_{true}|o)$)') 
+    x_label <- "Trajectory Quartile"
+  } else if (stat=="average_states_visited"){
+    y_label <- TeX(r'(Average N)')
+    x_label <- ""
+  }
+  if (optimality=="optimal"){
+    title_label<- "Optimal"
+  } else {
+    title_label <- "Suboptimal"
+  }
+  if (data=="new"){
+    title_label <- paste("New Data,", title_label)
+  } else {
+    title_label <- paste("Original Data,", title_label)
+  }
+  quartiles_plot <- ggplot(quartiles_df, aes(x=quartile, y=mean, fill=method)) + 
     geom_bar(stat="identity", color="black", 
              position=position_dodge()) +
     geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,
                    position=position_dodge(.9)) +
-    labs(title=paste(method, optimality, sep=", "), x="Trajectory Quartile", y = "Average  P(True Goal)")+
-     theme_classic() + 
-    ylim(0,1)
+    labs(title=title_label, x=x_label, y=y_label)+
+     theme_classic() #+ ylim(0,1.25)
   return(quartiles_plot)
 }
 
 ```
 
 ```{r}
+orig_opt_df_avg_prob <- mean_prob_true_goal_quartiles(optimality="Optimal", 
+                                             domain="doors-keys-gems", 
+                                             df=original_optimal_df, 
+                                             stat="average_probability",
+                                             data="original") 
+orig_opt_plot_avg_prob = get_mean_prob_true_goal_quartiles_plot(quartiles_df=orig_opt_df_avg_prob, 
+                                                       optimality="optimal",
+                                                       stat="average_probability",
+                                                       data="original")
 
-#true_goal_selections <- c("Q1_mean", "Q2_mean", "Q3_mean", "Q1_std", "Q2_std", "Q3_std")
-#top_1_selections <- c("Q1_top_ranked_mean", "Q2_top_ranked_mean", "Q3_top_ranked_mean", #"Q1_top_ranked_std", "Q2_top_ranked_std", "Q3_top_ranked_std")
-#                         
-#                         
-#                         
-#top_1_selections <- c(Q1_top_ranked_mean, Q2_top_ranked_mean, Q3_top_ranked_mean, #Q1_top_ranked_std, Q2_top_ranked_std, Q3_top_ranked_std)
-#
-#sips_optimal_mean_prob_true_goal_quartiles_df <- mean_prob_true_goal_quartiles(method="sips", 
-#                                                                               #domain="doors-keys-gems", 
-#                                                                               #orig_df=original_optimal_df, 
-#                                                                               #rep_df=reproduced_optimal_df,
-#                                                                               #selections=true_goal_selections)
-#sips_optimal_mean_prob_true_goal_quartiles_plot = #get_mean_prob_true_goal_quartiles_plot(quartiles_df=sips_optimal_mean_prob_true_goal_quartiles_df#, 
-#                                                                                         #method="SIPS", 
-#                                                                                         #optimality="Optimal")
-#
-#prp_optimal_mean_prob_true_goal_quartiles_df <- mean_prob_true_goal_quartiles(method="prp", 
-#                                                                               #domain="doors-keys-gems", 
-#                                                                               #orig_df=original_optimal_df, 
-#                                                                               #rep_df=reproduced_optimal_df,
-#                                                                               #selections=true_goal_selections)
-#prp_optimal_mean_prob_true_goal_quartiles_plot = #get_mean_prob_true_goal_quartiles_plot(quartiles_df=prp_optimal_mean_prob_true_goal_quartiles_df, #
-#                                                                                        #method="PRP", 
-#                                                                                        #optimality="Optimal")
-#
-#sips_suboptimal_mean_prob_true_goal_quartiles_df <- mean_prob_true_goal_quartiles(method="sips", 
-#                                                                               #domain="doors-keys-gems", 
-#                                                                               #orig_df=original_suboptimal_df, 
-#                                                                               #rep_df=reproduced_suboptimal_df,
-#                                                                               #selections=top_1_selections)
-#sips_suboptimal_mean_prob_true_goal_quartiles_plot = #get_mean_prob_true_goal_quartiles_plot(quartiles_df=sips_suboptimal_mean_prob_true_goal_quartiles#_df, 
-#                                                                                            #method="SIPS", 
-#                                                                                            #optimality="Suboptimal")
-#
-#prp_suboptimal_mean_prob_true_goal_quartiles_df <- mean_prob_true_goal_quartiles(method="prp", 
-#                                                                                #domain="doors-keys-gems", 
-#                                                                                #orig_df=original_suboptimal_df, 
-#                                                                                #rep_df=reproduced_suboptimal_df,
-#                                                                                #selections=top_1_selections)
-#prp_suboptimal_mean_prob_true_goal_quartiles_plot = #get_mean_prob_true_goal_quartiles_plot(quartiles_df=prp_suboptimal_mean_prob_true_goal_quartiles_#df, 
-#                                                                                           #method="PRP", 
-#                                                                                           #optimality="Suboptimal")
-#
-#plot_grid(sips_optimal_mean_prob_true_goal_quartiles_plot, 
-#          prp_optimal_mean_prob_true_goal_quartiles_plot, 
-#          ncol = 1)
-#
-#plot_grid(sips_suboptimal_mean_prob_true_goal_quartiles_plot, 
-#          prp_suboptimal_mean_prob_true_goal_quartiles_plot, 
-#          ncol = 1)
-```
+orig_sub_df_avg_prob <- mean_prob_true_goal_quartiles(optimality="Suboptimal", 
+                                             domain="doors-keys-gems", 
+                                             df=original_suboptimal_df,
+                                             stat="average_probability",
+                                             data="original")  
+orig_sub_plot_avg_prob = get_mean_prob_true_goal_quartiles_plot(quartiles_df=orig_sub_df_avg_prob,
+                                                       optimality="suboptimal",
+                                                       stat="average_probability",
+                                                       data="original")
 
+new_opt_df_avg_prob <- mean_prob_true_goal_quartiles(optimality="Optimal", 
+                                             domain="doors-keys-gems", 
+                                             df=reproduced_optimal_df, 
+                                             stat="average_probability",
+                                             data="new") 
+new_opt_plot_avg_prob = get_mean_prob_true_goal_quartiles_plot(quartiles_df=new_opt_df_avg_prob, 
+                                                      optimality="optimal",
+                                                      stat="average_probability",
+                                                      data="new")
 
-
-
-
-
-```{r}
-# sips, optimal, quartiles, p-true_top1
-
-
-original_df2 <- original_optimal_df %>%
-  filter(method != "BIRL-U")  %>%
-  filter(method != "BIRL-O") 
-
-colnames(original_df2) <- c("Domain", "Method", 'Q1_mean','Q1_std', 'Q2_mean','Q2_std', 'Q3_mean','Q3_std', "Q1_top_ranked_mean", "Q1_top_ranked_std", "Q2_top_ranked_mean", "Q2_top_ranked_std", "Q3_top_ranked_mean", "Q3_top_ranked_std", "N_mean", "N_std")
-temp_df <- original_df2 %>%
-  filter(Domain == "doors-keys-gems", Method=="sips") %>%
-  select(Q1_top_ranked_mean, Q2_top_ranked_mean, Q3_top_ranked_mean, Q1_top_ranked_std, Q2_top_ranked_std, Q3_top_ranked_std)
-colnames(temp_df) <- c("x1", "x2", "x3", "y1","y2","y3")
-  
-temp_df <- temp_df %>%
-  pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)"
- )
-
-
-reproduced_df2 <-reproduced_optimal_df[,c(1,2,3,4,5,6,7,8,11,12,13,14,15,16,9,10)]
-temp_df2 <- reproduced_df2 %>%
-  filter(Domain == "doors-keys-gems", Method=="sips") %>%
-  select(Q1_top_ranked_mean, Q2_top_ranked_mean, Q3_top_ranked_mean, Q1_top_ranked_std, Q2_top_ranked_std, Q3_top_ranked_std)
-colnames(temp_df2) <- c("x1", "x2", "x3", "y1","y2","y3")
-  
-temp_df2 <- temp_df2 %>%
-  pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)"
- )
-
-
-temp_df$status <- "orig"
-temp_df2$status <- "new"
-optimal_sips_quartiles <- rbind(temp_df, temp_df2)
-colnames(optimal_sips_quartiles) <- c("quartile", "mean", "sd", "data")
-optimal_sips_quartiles
-
-sips_optimal_quartiles_top1_plot <- ggplot(optimal_sips_quartiles, aes(x=quartile, y=mean, fill=data)) + 
-  geom_bar(stat="identity", color="black", 
-           position=position_dodge()) +
-  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,
-                 position=position_dodge(.9)) +
-  labs(title="SIPS, Optimal", x="Trajectory Quartile", y = "Proportion P(True Goal) Top 1")+
-   theme_classic()
-#print(sips_optimal_quartiles_top1_plot)
+new_sub_df_avg_prob <- mean_prob_true_goal_quartiles(optimality="Suboptimal", 
+                                             domain="doors-keys-gems", 
+                                             df=reproduced_suboptimal_df,
+                                             stat="average_probability",
+                                             data="new") 
+new_sub_plot_avg_prob = get_mean_prob_true_goal_quartiles_plot(quartiles_df=new_sub_df_avg_prob, 
+                                                      optimality="suboptimal",
+                                                      stat="average_probability",
+                                                      data="new") 
 
 ```
 
 ```{r}
-# prp, optimal, quartiles, p-true_top1
+orig_opt_df_top1 <- mean_prob_true_goal_quartiles(optimality="Optimal", 
+                                             domain="doors-keys-gems", 
+                                             df=original_optimal_df, 
+                                             stat="proportion_top1",
+                                             data="original") 
+orig_opt_plot_top1 = get_mean_prob_true_goal_quartiles_plot(quartiles_df=orig_opt_df_top1, 
+                                                       optimality="optimal",
+                                                       stat="proportion_top1",
+                                                       data="original")
+
+orig_sub_df_top1 <- mean_prob_true_goal_quartiles(optimality="Suboptimal", 
+                                             domain="doors-keys-gems", 
+                                             df=original_suboptimal_df,
+                                             stat="proportion_top1",
+                                             data="original")  
+orig_sub_plot_top1 = get_mean_prob_true_goal_quartiles_plot(quartiles_df=orig_sub_df_top1,
+                                                       optimality="suboptimal",
+                                                       stat="proportion_top1",
+                                                       data="original")
+
+new_opt_df_top1 <- mean_prob_true_goal_quartiles(optimality="Optimal", 
+                                             domain="doors-keys-gems", 
+                                             df=reproduced_optimal_df, 
+                                             stat="proportion_top1",
+                                             data="new") 
+new_opt_plot_top1 = get_mean_prob_true_goal_quartiles_plot(quartiles_df=new_opt_df_top1, 
+                                                      optimality="optimal",
+                                                      stat="proportion_top1",
+                                                      data="new")
+
+new_sub_df_top1 <- mean_prob_true_goal_quartiles(optimality="Suboptimal", 
+                                             domain="doors-keys-gems", 
+                                             df=reproduced_suboptimal_df,
+                                             stat="proportion_top1",
+                                             data="new") 
+new_sub_plot_top1 = get_mean_prob_true_goal_quartiles_plot(quartiles_df=new_sub_df_top1, 
+                                                      optimality="suboptimal",
+                                                      stat="proportion_top1",
+                                                      data="new") 
 
 
-original_df2 <- original_optimal_df %>%
-  filter(method != "BIRL-U")  %>%
-  filter(method != "BIRL-O") 
-
-colnames(original_df2) <- c("Domain", "Method", 'Q1_mean','Q1_std', 'Q2_mean','Q2_std', 'Q3_mean','Q3_std', "Q1_top_ranked_mean", "Q1_top_ranked_std", "Q2_top_ranked_mean", "Q2_top_ranked_std", "Q3_top_ranked_mean", "Q3_top_ranked_std", "N_mean", "N_std")
-temp_df <- original_df2 %>%
-  filter(Domain == "doors-keys-gems", Method=="prp") %>%
-  select(Q1_top_ranked_mean, Q2_top_ranked_mean, Q3_top_ranked_mean, Q1_top_ranked_std, Q2_top_ranked_std, Q3_top_ranked_std)
-colnames(temp_df) <- c("x1", "x2", "x3", "y1","y2","y3")
-  
-temp_df <- temp_df %>%
-  pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)"
- )
-
-
-reproduced_df2 <-reproduced_optimal_df[,c(1,2,3,4,5,6,7,8,11,12,13,14,15,16,9,10)]
-temp_df2 <- reproduced_df2 %>%
-  filter(Domain == "doors-keys-gems", Method=="prp") %>%
-  select(Q1_top_ranked_mean, Q2_top_ranked_mean, Q3_top_ranked_mean, Q1_top_ranked_std, Q2_top_ranked_std, Q3_top_ranked_std)
-colnames(temp_df2) <- c("x1", "x2", "x3", "y1","y2","y3")
-  
-temp_df2 <- temp_df2 %>%
-  pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)"
- )
-
-
-temp_df$status <- "orig"
-temp_df2$status <- "new"
-optimal_sips_quartiles <- rbind(temp_df, temp_df2)
-colnames(optimal_sips_quartiles) <- c("quartile", "mean", "sd", "data")
-optimal_sips_quartiles
-
-prp_optimal_quartiles_top1_plot <- ggplot(optimal_sips_quartiles, aes(x=quartile, y=mean, fill=data)) + 
-  geom_bar(stat="identity", color="black", 
-           position=position_dodge()) +
-  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,
-                 position=position_dodge(.9)) +
-  labs(title="PRP, Optimal", x="Trajectory Quartile", y = "Proportion P(True Goal) Top 1")+
-   theme_classic()
-#print(prp_optimal_quartiles_top1_plot)
 ```
 
 ```{r}
-# prp, optimal, quartiles, p-true_top1
+orig_opt_df_avg_states <- mean_prob_true_goal_quartiles(optimality="Optimal", 
+                                             domain="doors-keys-gems", 
+                                             df=original_optimal_df, 
+                                             stat="average_states_visited",
+                                             data="original") 
+orig_opt_plot_avg_states = get_mean_prob_true_goal_quartiles_plot(quartiles_df=orig_opt_df_avg_states, 
+                                                       optimality="optimal",
+                                                       stat="average_states_visited",
+                                                       data="original")
+
+orig_sub_df_avg_states <- mean_prob_true_goal_quartiles(optimality="Suboptimal", 
+                                             domain="doors-keys-gems", 
+                                             df=original_suboptimal_df,
+                                             stat="average_states_visited",
+                                             data="original")  
+orig_sub_plot_avg_states = get_mean_prob_true_goal_quartiles_plot(quartiles_df=orig_sub_df_avg_states,
+                                                       optimality="suboptimal",
+                                                       stat="average_states_visited",
+                                                       data="original")
+
+new_opt_df_avg_states <- mean_prob_true_goal_quartiles(optimality="Optimal", 
+                                             domain="doors-keys-gems", 
+                                             df=reproduced_optimal_df, 
+                                             stat="average_states_visited",
+                                             data="new") 
+new_opt_plot_avg_states = get_mean_prob_true_goal_quartiles_plot(quartiles_df=new_opt_df_avg_states, 
+                                                      optimality="optimal",
+                                                      stat="average_states_visited",
+                                                      data="new")
+
+new_sub_df_avg_states <- mean_prob_true_goal_quartiles(optimality="Suboptimal", 
+                                             domain="doors-keys-gems", 
+                                             df=reproduced_suboptimal_df,
+                                             stat="average_states_visited",
+                                             data="new") 
+new_sub_plot_avg_states = get_mean_prob_true_goal_quartiles_plot(quartiles_df=new_sub_df_avg_states, 
+                                                      optimality="suboptimal",
+                                                      stat="average_states_visited",
+                                                      data="new") 
+
+```
 
 
-original_df2 <- original_suboptimal_df %>%
-  filter(method != "BIRL-U")  %>%
-  filter(method != "BIRL-O") 
-
-colnames(original_df2) <- c("Domain", "Method", 'Q1_mean','Q1_std', 'Q2_mean','Q2_std', 'Q3_mean','Q3_std', "Q1_top_ranked_mean", "Q1_top_ranked_std", "Q2_top_ranked_mean", "Q2_top_ranked_std", "Q3_top_ranked_mean", "Q3_top_ranked_std", "N_mean", "N_std")
-temp_df <- original_df2 %>%
-  filter(Domain == "doors-keys-gems", Method=="prp") %>%
-  select(Q1_top_ranked_mean, Q2_top_ranked_mean, Q3_top_ranked_mean, Q1_top_ranked_std, Q2_top_ranked_std, Q3_top_ranked_std)
-colnames(temp_df) <- c("x1", "x2", "x3", "y1","y2","y3")
-  
-temp_df <- temp_df %>%
-  pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)"
- )
-
-
-reproduced_df2 <-reproduced_suboptimal_df[,c(1,2,3,4,5,6,7,8,11,12,13,14,15,16,9,10)]
-temp_df2 <- reproduced_df2 %>%
-  filter(Domain == "doors-keys-gems", Method=="prp") %>%
-  select(Q1_top_ranked_mean, Q2_top_ranked_mean, Q3_top_ranked_mean, Q1_top_ranked_std, Q2_top_ranked_std, Q3_top_ranked_std)
-colnames(temp_df2) <- c("x1", "x2", "x3", "y1","y2","y3")
-  
-temp_df2 <- temp_df2 %>%
-  pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)"
- )
-
-
-temp_df$status <- "orig"
-temp_df2$status <- "new"
-optimal_sips_quartiles <- rbind(temp_df, temp_df2)
-colnames(optimal_sips_quartiles) <- c("quartile", "mean", "sd", "data")
-optimal_sips_quartiles
-
-prp_suboptimal_quartiles_top1_plot <- ggplot(optimal_sips_quartiles, aes(x=quartile, y=mean, fill=data)) + 
-  geom_bar(stat="identity", color="black", 
-           position=position_dodge()) +
-  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,
-                 position=position_dodge(.9)) +
-  labs(title="PRP, Suboptimal", x="Trajectory Quartile", y = "Proportion P(True Goal) Top 1")+
-   theme_classic()
-#print(prp_suboptimal_quartiles_top1_plot)
+```{r}
+t.test2 <- function(m1,m2,s1,s2,n1,n2,m0=0,equal.variance=FALSE)
+{
+    if( equal.variance==FALSE ) 
+    {
+        se <- sqrt( (s1^2/n1) + (s2^2/n2) )
+        # welch-satterthwaite df
+        df <- ( (s1^2/n1 + s2^2/n2)^2 )/( (s1^2/n1)^2/(n1-1) + (s2^2/n2)^2/(n2-1) )
+    } else
+    {
+        # pooled standard deviation, scaled by the sample sizes
+        se <- sqrt( (1/n1 + 1/n2) * ((n1-1)*s1^2 + (n2-1)*s2^2)/(n1+n2-2) ) 
+        df <- n1+n2-2
+    }      
+    t <- (m1-m2-m0)/se 
+    dat <- c(m1-m2, se, t, 2*pt(-abs(t),df))    
+    names(dat) <- c("Diff", "StdError", "t", "p_value")
+    return(dat) 
+}
 ```
 
 ```{r}
-# sips, suboptimal, quartiles, p-true_top1
-original_df2 <- original_suboptimal_df %>%
-  filter(method != "BIRL-U")  %>%
-  filter(method != "BIRL-O") 
+orig_opt_df_avg_prob$optimality <- "optimal"
+orig_opt_df_avg_prob$metric <- "avg_probability"
+orig_sub_df_avg_prob$optimality <- "suboptimal"
+orig_sub_df_avg_prob$metric <- "avg_probability"
 
-colnames(original_df2) <- c("Domain", "Method", 'Q1_mean','Q1_std', 'Q2_mean','Q2_std', 'Q3_mean','Q3_std', "Q1_top_ranked_mean", "Q1_top_ranked_std", "Q2_top_ranked_mean", "Q2_top_ranked_std", "Q3_top_ranked_mean", "Q3_top_ranked_std", "N_mean", "N_std")
-temp_df <- original_df2 %>%
-  filter(Domain == "doors-keys-gems", Method=="sips") %>%
-  select(Q1_top_ranked_mean, Q2_top_ranked_mean, Q3_top_ranked_mean, Q1_top_ranked_std, Q2_top_ranked_std, Q3_top_ranked_std)
-colnames(temp_df) <- c("x1", "x2", "x3", "y1","y2","y3")
-  
-temp_df <- temp_df %>%
-  pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)"
- )
+orig_opt_df_top1$optimality <- "optimal"
+orig_opt_df_top1$metric <- "top1"
+orig_sub_df_top1$optimality <- "suboptimal"
+orig_sub_df_top1$metric <- "top1"
 
-reproduced_df2 <-reproduced_suboptimal_df[,c(1,2,3,4,5,6,7,8,11,12,13,14,15,16,9,10)]
-temp_df2 <- reproduced_df2 %>%
-  filter(Domain == "doors-keys-gems", Method=="sips") %>%
-  select(Q1_top_ranked_mean, Q2_top_ranked_mean, Q3_top_ranked_mean, Q1_top_ranked_std, Q2_top_ranked_std, Q3_top_ranked_std)
-colnames(temp_df2) <- c("x1", "x2", "x3", "y1","y2","y3")
-  
-temp_df2 <- temp_df2 %>%
-  pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)"
- )
+orig_opt_df_avg_states$optimality <- "optimal"
+orig_opt_df_avg_states$metric <- "avg_states"
+orig_sub_df_avg_states$optimality <- "suboptimal"
+orig_sub_df_avg_states$metric <- "avg_states"
 
 
-temp_df$status <- "orig"
-temp_df2$status <- "new"
-optimal_sips_quartiles <- rbind(temp_df, temp_df2)
-colnames(optimal_sips_quartiles) <- c("quartile", "mean", "sd", "data")
-optimal_sips_quartiles
+new_opt_df_avg_prob$optimality <- "optimal"
+new_opt_df_avg_prob$metric <- "avg_probability"
+new_sub_df_avg_prob$optimality <- "suboptimal"
+new_sub_df_avg_prob$metric <- "avg_probability"
 
-sips_suboptimal_quartiles_top1_plot <- ggplot(optimal_sips_quartiles, aes(x=quartile, y=mean, fill=data)) + 
-  geom_bar(stat="identity", color="black", 
-           position=position_dodge()) +
-  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,
-                 position=position_dodge(.9)) +
-  labs(title="SIPS, Suboptimal", x="Trajectory Quartile", y = "Proportion P(True Goal) Top 1")+
-   theme_classic()
-#print(sips_suboptimal_quartiles_top1_plot)
+new_opt_df_top1$optimality <- "optimal"
+new_opt_df_top1$metric <- "top1"
+new_sub_df_top1$optimality <- "suboptimal"
+new_sub_df_top1$metric <- "top1"
+
+new_opt_df_avg_states$optimality <- "optimal"
+new_opt_df_avg_states$metric <- "avg_states"
+new_sub_df_avg_states$optimality <- "suboptimal"
+new_sub_df_avg_states$metric <- "avg_states"
+
+
+
+original_data_summary <- rbind(orig_opt_df_avg_prob, 
+                               orig_sub_df_avg_prob, 
+                               orig_opt_df_top1, 
+                               orig_sub_df_top1,
+                               orig_opt_df_avg_states, 
+                               orig_sub_df_avg_states)
+
+new_data_summary <- rbind(new_opt_df_avg_prob, 
+                          new_sub_df_avg_prob, 
+                          new_opt_df_top1, 
+                          new_sub_df_top1,
+                          new_opt_df_avg_states, 
+                          new_sub_df_avg_states)
+
 ```
 
-```{r}
-plot_grid(sips_optimal_quartiles_top1_plot, 
-          prp_optimal_quartiles_top1_plot, 
-          ncol = 1)
 
-plot_grid(sips_suboptimal_quartiles_top1_plot, 
-          prp_suboptimal_quartiles_top1_plot, 
+```{r}
+n = nrow(original_data_summary)
+
+difference_of_means <- c()
+std_errors <- c()
+ts <- c()
+p_values <- c()
+optimality <- c()
+metric <- c()
+method <- c()
+
+for (row in 1:n) {
+  m1 <- original_data_summary$mean[row]
+  s1 <- original_data_summary$sd[row]
+  m2 <- new_data_summary$mean[row] 
+  s2 <- new_data_summary$sd[row] 
+  n1 <-13.0
+  n2 <-13.0
+  
+  ttest_result <- t.test2(m1,m2,s1,s2,n1,n2,m0=0,equal.variance=FALSE)
+  
+  difference_of_means <- c(difference_of_means, ttest_result["Diff"])
+  std_errors <- c(std_errors , ttest_result["StdError"])
+  ts <- c(ts, ttest_result["t"])
+  p_values <- c(p_values, ttest_result["p_value"])
+  optimality <- c(optimality, original_data_summary$optimality[row])
+  metric <- c(metric, original_data_summary$metric[row])
+  method <- c(method, original_data_summary$method[row])
+}
+
+significance_tests <- data.frame(difference_of_means, std_errors, ts, p_values, optimality, metric, method)
+colnames(significance_tests) <- c("Difference", "Std Error", 't','p-Value', "Optimality", "Metric", "Method")
+
+significance_tests <- significance_tests %>% 
+  mutate(across(where(is.numeric), ~ round(., digits = 2)))
+
+```
+
+### Key Analysis 1: Qualitative Comparison of a Suboptimal Plan 
+```{r}
+plot_grid(human_ribbon_dist, 
+          suboptimal_sips_plot, 
+          suboptimal_prp_plot,
           ncol = 1)
 ```
 
-
-
-
+### Key Analysis 2: Correlations for SIPS vs Humans, and PRP vs Humans
 ```{r}
-#
-##cor(x, y,  method = "pearson", use = "complete.obs")
-#temp_human <- human_dist %>%
-#  filter(goal=="goal_probs_2")
-#
-#temp_human
-#
-#human_prob <- approx(temp_sub_prp$timestep, temp_sub_prp$prob, method = "linear", xout=temp_human$timestep)
-#
-#
-#
-#temp_sub_sips <- suboptimal_sips_dist %>%
-#  filter(goal=="goal_probs_2")
-#
-#temp_sub_sips
-#
-#sips_prob <- approx(temp_sub_sips$timestep, temp_sub_sips$prob, method = "linear", xout=temp_human$timestep)
-#sips_prob$y[8:9] <- 1.0
-#
-#r_sips <- cor(temp_human$mean, sips_prob$y,  method = "pearson", use = "complete.obs")
-#r_sips
-#
-#
-#temp_sub_prp <- suboptimal_prp_dist %>%
-#  filter(goal=="goal_probs_2")
-#
-#temp_sub_prp
-#
-#prp_prob <- approx(temp_sub_prp$timestep, temp_sub_prp$prob, method = "linear", xout=temp_human$timestep)
-##sips_prob$y[8:9] <- 1.0
-##print(prp_prob)
-#
-#r_prp <- cor(temp_human$mean, prp_prob$y,  method = "pearson", use = "complete.obs")
-#print(r_prp)
-#
-#
-#
-#
+kable(correlations,caption="Correlation to Human Judgements")
 ```
 
-### Key analysis
+### Key Analysis 3: Accuracy and Efficiency Comparison
+```{r}
+plot_grid(orig_opt_plot_avg_prob, 
+          orig_sub_plot_avg_prob,
+          new_opt_plot_avg_prob,
+          new_sub_plot_avg_prob,
+          ncol = 2)
 
-The analyses as specified in the analysis plan.  
+plot_grid(orig_opt_plot_top1, 
+          orig_sub_plot_top1,
+          new_opt_plot_top1,
+          new_sub_plot_top1,
+          ncol = 2)
 
-*Side-by-side graph with original graph is ideal here*
+plot_grid(orig_opt_plot_avg_states, 
+          orig_sub_plot_avg_states,
+          new_opt_plot_avg_states,
+          new_sub_plot_avg_states,
+          ncol = 2)
+```
 
-###Exploratory analyses
 
-Any follow-up analyses desired (not required).  
+### Key Analysis 4: Significance Tests
+
+```{r}
+knit_print.data.frame <- lemon_print
+kable(significance_tests,caption='Two Tailed T-Tests: New vs Original Results')
+```
+
 
 ## Discussion
 
+### Key Analysis 1 and 2: 
+For my results, I did not see significant differences between human judgements and SIPS inferences. However, unlike the paper, SIPS inferences become even sharper, where inferences become overly confident earlier than those shown in the paper. This also happens to be the case for PRP although like the results in the paper it reacts less sharply to observations in comparison to SIPS. The paper concluded that SIPS deomnstrated much more human like characteristics, but from my results, I see that both SIPS and PRP are not that different. This can be more clearly seen by the correlations of 0.76 vs 0.75 which does not demonstrate a big difference in qualitative difference between tthe two algorithms. In the paper a correlation of 0.99 was found between human judgements and SIPS, which is much higher than was was found here. Nevertheless, the characteristic is still indicative of showing that SIPS picks up the cues that humans do when making new observations of an agents trajectory leading it to sharply change its inferences to be based on reqwighting the likelihood of its plans given new observations. 
+
+### Key Analysis 3 and 4:
+In almost al cases of the optimal and suboptimal plans, SIPS and PRP are the same with little chance. There are a few cases where in the original data, the average probability of the true goal is greater for PRP than SIPS and this observation is reversed in the new data from the reproduction. However, looking at the significance test we can conclude that these differences are not significant. 
+
+In fact, most of the reproduction here was a success, without any p-values dropping below 0.05 with the exception of the reprroduction for the average number of states visited by both prp and sips where we have significant differences between my new data and the original data. Despite these significant differences, the results still hold primarily because the main claim here is that SIPS is significantly more efficeient that PRP. That is still true despite the fact that in both cases the number of states visited is significantly higher, two orders of magnitude higher, than that reported in the paper. 
+
+There are a few NaN values reported in the t-tests. This is dude to the lack of variance for some of the runs when PRP becomes very confident, there is 0 standard deviation in both the original data and the new results and hence no significant difference between the two and hence a p-value is unecessary. 
+
 ### Summary of Reproduction Attempt
 
-Open the discussion section with a paragraph summarizing the primary result from the key analysis and assess whether you successfully reproduced it, partially reproduced it, or failed to reproduce it.  
+The primary results are broken into several parts. 1.  SIPS shows human like inferences. This was a success, however, not significantly more than PRP which was a claim made about one of the significant advantages in the paper. 2. All differences between the average probability of the underlying true goal and the proportion of time the underlying prbability of true goal is correct are insignificant and were reproduced successfully. The efficiency claim also holds despite both methods being more costly to compute. Because both increased the same relationship, namely that SIPS is more efficent than PRP still holds and to a large degree. Overall I would say the reproduction was a success with the exception of the main benefit of SIPS is efficiency. It is not clear from my results that is is more human like. However, I only tested the trajectory characteristic of SIPS vs PRP one a single problem. It is possible that over several runs of the same problem that SIPS demonstrates significant differences and due to the variation in sampling procedures I sampled an edge case where SIPS does not show an strong advantage over PRP to modeling human behavior (aside from efficinecy). In computing the average probility, the top 1 accuracy over several problems I found no significant differences, and comuting these values over several probem is likelly what yiielded good results, since the inherent nature of smapling would indicate that many runs are need to get a good sence of the performance of SIPS and PRP. 
 
 ### Commentary
 
-Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis of the dataset, (b) assessment of the meaning of the successful or unsuccessful reproducibility attempt - e.g., for a failure to reproduce the original findings, are the differences between original and present analyses ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the reproducibility attempt (if you contacted them).  None of these need to be long.
+I learned alot from this project. I was able to get in touch with the first author and was given clarity of some of the questions I had when I felt some details were missing from the paper. Getting the code to work required some backporting in order for the original code to work despite is being only a year since code was made available. I learend about Julia the programming lanauge and Gen which I am excited to use more in my own research. 
+
+I initially set out to reproduce results for several domains listed inthe paper (a tota of 4 each on several problems). However, while I did run SIPS and PRP on all four domains, I did not have time to analyze all of the results. These are included in the data folder in the github repo and my future plan is to rerun my analyses on the the left out three domains taxi, intrusion detection, and world bocks, respectively. 

@@ -1,4 +1,4 @@
-domain,method,Q1,Q1_std,Q2,Q2_std,Q3,Q3_std,Q1_top1,Q1_top1_std,Q2_top1,Q2_top1_std,Q3_top1,Q3_top1_std,N,N_std
+domain,method,Q1,Q1_std,Q2,Q2_std,Q3,Q3_std,Q1_top1,Q1_top1_std,Q2_top1,Q2_top1_std,Q3_top1,Q3_top1_std,N_mean,N_std
 taxi,sips,0.43,0.32,0.51,0.38,0.62,0.42,0.46,0.51,0.5,0.51,0.67,0.48,1530,1110.0
 taxi,BIRL-U,0.34,0.06,0.33,0.0,0.79,0.23,0.33,0.47,0.42,0.49,0.92,0.28,10000,0.0
 taxi,BIRL-O,0.35,0.29,0.48,0.32,0.81,0.32,0.38,0.48,0.46,0.5,0.79,0.41,2500,0.0
